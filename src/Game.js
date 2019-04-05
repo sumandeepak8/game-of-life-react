@@ -1,16 +1,21 @@
 import React, { Component } from 'react';
 import './Game.css';
-import nextGeneraion from './gameOfLife.js';
+import { nextGeneration, getCoordinates } from './gameOfLife.js';
 
 class Game extends Component {
   constructor(props) {
     super(props);
-    this.aliveCells = [];
-    this.bounds = { topLeft: [0, 0], bottomRight: [4, 4] };
-    this.length = this.bounds.bottomRight[0] - this.bounds.topLeft[0] + 1;
-    this.width = this.bounds.bottomRight[1] - this.bounds.topLeft[1] + 1;
+    this.setState = {
+      bounds: { topLeft: [0, 0], bottomRight: [4, 4] },
+      currGeneration: [],
+      aliveCells: []
+    };
+
+    this.length =
+      this.setState.bounds.bottomRight[0] - this.setState.bounds.topLeft[0] + 1;
+    this.width =
+      this.setState.bounds.bottomRight[1] - this.setState.bounds.topLeft[1] + 1;
     this.selectCell = this.selectCell.bind(this);
-    this.currGeneration = [];
     this.runGame = this.runGame.bind(this);
   }
 
@@ -18,42 +23,40 @@ class Game extends Component {
     event.target.style.backgroundColor = 'black';
   }
 
-  getCoordinates() {
-    let numbers = 1;
-    for (let i = 0; i <= this.bounds.bottomRight[0]; i++) {
-      for (let j = 0; j <= this.bounds.bottomRight[1]; j++) {
-        if (this.aliveCells.includes(numbers)) {
-          this.currGeneration.push([i, j]);
-        }
-        numbers++;
-      }
-    }
-  }
-
   getAllSelectedCellsNumbers(allRows) {
     let number = 1;
     for (let row of allRows) {
-      for (let j = 0; j < this.width; j++) {
-        let isSelectedCell = row.children[j].style.backgroundColor == 'black';
-        if (isSelectedCell) this.aliveCells.push(number);
+      for (let j = 0; j < this.length; j++) {
+        if (row.children[j].style.backgroundColor == 'black')
+          this.setState.aliveCells.push(number);
         number++;
       }
     }
   }
 
   willAlive(cell) {
-    return this.currGeneration.some(x => {
-      return +x.join('') == +cell.join('');
+    return this.setState.currGeneration.some(position => {
+      return +position.join('') == +cell.join('');
     });
   }
 
   runGame() {
     let allRows = document.getElementById('Board').children;
     this.getAllSelectedCellsNumbers(allRows);
-    this.getCoordinates(this.bounds);
+
+    this.setState.currGeneration = getCoordinates(
+      this.setState.aliveCells,
+      this.length,
+      this.width
+    );
 
     setInterval(() => {
-      this.currGeneration = nextGeneraion(this.currGeneration, this.bounds);
+      this.setState.currGeneration = nextGeneration(
+        this.length,
+        this.width,
+        this.setState.currGeneration
+      );
+
       let i = 0;
       for (let row of allRows) {
         for (let j = 0; j < this.width; j++) {
@@ -68,7 +71,7 @@ class Game extends Component {
 
   rowsGenerator() {
     let cell = <td onClick={this.selectCell} />;
-    let cells = new Array(this.width).fill(cell);
+    let cells = new Array(this.length).fill(cell);
     let row = <tr className="CellRow">{cells}</tr>;
     let rows = new Array(this.width).fill(row);
     return rows;
