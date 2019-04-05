@@ -5,7 +5,7 @@ import { nextGeneration, getCoordinates } from './GameOfLife.js';
 class Game extends Component {
   constructor(props) {
     super(props);
-    this.setState = {
+    this.state = {
       length: 5,
       width: 5,
       aliveCells: [],
@@ -23,16 +23,17 @@ class Game extends Component {
   getAllSelectedCellsNumbers(allRows) {
     let number = 1;
     for (let row of allRows) {
-      for (let j = 0; j < this.setState.length; j++) {
-        if (row.children[j].style.backgroundColor == 'black')
-          this.setState.aliveCells.push(number);
+      for (let j = 0; j < this.state.length; j++) {
+        if (row.children[j].style.backgroundColor == 'black') {
+          this.state.aliveCells.push(number);
+        }
         number++;
       }
     }
   }
 
   willAlive(cell) {
-    return this.setState.currGeneration.some(position => {
+    return this.state.currGeneration.some(position => {
       return +position.join('') == +cell.join('');
     });
   }
@@ -40,23 +41,22 @@ class Game extends Component {
   runGame() {
     let allRows = document.getElementById('Board').children;
     this.getAllSelectedCellsNumbers(allRows);
+    let length = this.state.length;
+    let width = this.state.width;
+    let aliveCells = this.state.aliveCells;
 
-    this.setState.currGeneration = getCoordinates(
-      this.setState.aliveCells,
-      this.setState.length,
-      this.setState.width
-    );
+    this.state.currGeneration = getCoordinates(aliveCells, length, width);
 
     setInterval(() => {
-      this.setState.currGeneration = nextGeneration(
-        this.setState.length,
-        this.setState.width,
-        this.setState.currGeneration
+      this.state.currGeneration = nextGeneration(
+        this.state.length,
+        this.state.width,
+        this.state.currGeneration
       );
 
       let i = 0;
       for (let row of allRows) {
-        for (let j = 0; j < this.setState.width; j++) {
+        for (let j = 0; j < this.state.width; j++) {
           row.children[j].style.backgroundColor = 'white';
           if (this.willAlive([i, j]))
             row.children[j].style.backgroundColor = 'black';
@@ -68,9 +68,9 @@ class Game extends Component {
 
   rowsGenerator() {
     let cell = <td onClick={this.selectCell} />;
-    let cells = new Array(this.setState.length).fill(cell);
+    let cells = new Array(this.state.length).fill(cell);
     let row = <tr className="CellRow">{cells}</tr>;
-    let rows = new Array(this.setState.width).fill(row);
+    let rows = new Array(this.state.width).fill(row);
     return rows;
   }
 
