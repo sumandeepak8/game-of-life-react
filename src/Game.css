@@ -1,0 +1,64 @@
+.App {
+  text-align: center;
+}
+
+.App-header {
+  min-height: 100vh;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+}
+
+html,
+body {
+  height: 100%;
+  width: 100%;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  
+}
+
+#root {
+  height: 90%;
+  width: 100%;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.Game {
+  width: 500px;
+  height: 500px;
+
+  display: inherit;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.Board {
+  width: 500px;
+  height: 500px;
+
+  display: flex;
+  flex-direction: column;
+}
+
+.Board .CellRow {
+  height: 100px;
+  width: 500px;
+}
+
+.CellRow td {
+  height: 100px;
+  width: 100px;
+  border: 1px solid blue;
+}
