@@ -1,4 +1,4 @@
-const { world } = require('./gameLibrary.js');
+const { world } = require('./GameLibrary.js');
 
 const getCoordinates = function(selectedCell, length, width) {
   let currGeneration = new Array();

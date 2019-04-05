@@ -1,20 +1,17 @@
 import React, { Component } from 'react';
 import './Game.css';
-import { nextGeneration, getCoordinates } from './gameOfLife.js';
+import { nextGeneration, getCoordinates } from './GameOfLife.js';
 
 class Game extends Component {
   constructor(props) {
     super(props);
     this.setState = {
-      bounds: { topLeft: [0, 0], bottomRight: [4, 4] },
-      currGeneration: [],
-      aliveCells: []
+      length: 5,
+      width: 5,
+      aliveCells: [],
+      currGeneration: []
     };
 
-    this.length =
-      this.setState.bounds.bottomRight[0] - this.setState.bounds.topLeft[0] + 1;
-    this.width =
-      this.setState.bounds.bottomRight[1] - this.setState.bounds.topLeft[1] + 1;
     this.selectCell = this.selectCell.bind(this);
     this.runGame = this.runGame.bind(this);
   }
@@ -26,7 +23,7 @@ class Game extends Component {
   getAllSelectedCellsNumbers(allRows) {
     let number = 1;
     for (let row of allRows) {
-      for (let j = 0; j < this.length; j++) {
+      for (let j = 0; j < this.setState.length; j++) {
         if (row.children[j].style.backgroundColor == 'black')
           this.setState.aliveCells.push(number);
         number++;
@@ -46,20 +43,20 @@ class Game extends Component {
 
     this.setState.currGeneration = getCoordinates(
       this.setState.aliveCells,
-      this.length,
-      this.width
+      this.setState.length,
+      this.setState.width
     );
 
     setInterval(() => {
       this.setState.currGeneration = nextGeneration(
-        this.length,
-        this.width,
+        this.setState.length,
+        this.setState.width,
         this.setState.currGeneration
       );
 
       let i = 0;
       for (let row of allRows) {
-        for (let j = 0; j < this.width; j++) {
+        for (let j = 0; j < this.setState.width; j++) {
           row.children[j].style.backgroundColor = 'white';
           if (this.willAlive([i, j]))
             row.children[j].style.backgroundColor = 'black';
@@ -71,9 +68,9 @@ class Game extends Component {
 
   rowsGenerator() {
     let cell = <td onClick={this.selectCell} />;
-    let cells = new Array(this.length).fill(cell);
+    let cells = new Array(this.setState.length).fill(cell);
     let row = <tr className="CellRow">{cells}</tr>;
-    let rows = new Array(this.width).fill(row);
+    let rows = new Array(this.setState.width).fill(row);
     return rows;
   }
 
